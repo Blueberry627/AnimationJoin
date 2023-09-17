@@ -6,10 +6,12 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\Listener;
 use pocketmine\item\Item;
-use pocketmine\network\mcpe\protocol\ActorEventPacket;
-use pocketmine\network\mcpe\protocol\types\ActorEvent;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
+use pocketmine\network\mcpe\protocol\types\LevelEvent;
+use pocketmine\network\mcpe\protocol\ActorEventPacket;
+use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 
 class Main extends PluginBase implements Listener {
 
@@ -28,16 +30,51 @@ class Main extends PluginBase implements Listener {
         $animationType = $this->config->get("animation_type", "totem");
 
         if ($animationType === "totem") {
-            $this->sendCustomAnimation($player, ActorEvent::CONSUME_TOTEM);
+            $this->sendTotemAnimation($player);
+            $this->sendTotemSound($player);
         } elseif ($animationType === "guardian") {
-            $player->addEffect(Effect::getEffect(Effect::GUARDIAN_CURSE)->setDuration(200));
+            $player->getInventory()->setItemInHand(Item::get(Item::TOTEM));
+            $this->sendGuardianAnimation($player);
+            $this->sendGuardianSound($player);
         }
     }
 
-    private function sendCustomAnimation(Player $player, int $eventId) {
-        $pk = new ActorEventPacket();
-        $pk->entityRuntimeId = $player->getId();
-        $pk->event = $eventId;
+    private function sendTotemAnimation(Player $player) {
+        $pk = LevelEventPacket::create(
+            eventId: LevelEvent::GUARDIAN_CURSE, // Corrected totem animation
+            eventData: 0,
+            position: $player->getPosition()
+        );
+        $player->getNetworkSession()->sendDataPacket($pk);
+    }
+
+    private function sendTotemSound(Player $player) {
+        $pk = new PlaySoundPacket();
+        $pk->soundName = "item.totem.use";
+        $pk->x = $player->getX();
+        $pk->y = $player->getY();
+        $pk->z = $player->getZ();
+        $pk->volume = 1.0;
+        $pk->pitch = 1.0;
+        $player->sendDataPacket($pk);
+    }
+
+    private function sendGuardianAnimation(Player $player) {
+        $pk = ActorEventPacket::create(
+            entityId: $player->getId(),
+            event: ActorEventPacket::CONSUME_TOTEM
+        );
         $player->broadcastEntityEvent($pk);
+    }
+
+    private function sendGuardianSound(Player $player) {
+        $pk = new PlaySoundPacket();
+        $pk->soundName = "entity.guardian.curse";
+        $pk->x = $player->getX();
+        $pk->y = $player->getY();
+        $pk->z = $player->getZ();
+        $pk->volume = 1.0;
+        $pk->pitch = 1.0;
+        $player->sendDataPacket($pk);
     }
 }
