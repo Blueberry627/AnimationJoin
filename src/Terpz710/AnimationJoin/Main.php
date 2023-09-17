@@ -1,6 +1,6 @@
 <?php
 
-namespace Terpz710\JoinAnimations;
+namespace Terpz710\JoinAnimation;
 
 use pocketmine\plugin\PluginBase;
 
