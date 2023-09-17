@@ -1,0 +1,10 @@
+# Customize the effects here.
+golden_apple_effects:
+  "Golden Apple":
+    - "REGENERATION 200 2 true"
+    - "ABSORPTION 2400 1 true"
+  "Enchanted Golden Apple":
+    - "REGENERATION 1200 5 true"
+    - "ABSORPTION 2400 4 true"
+    - "RESISTANCE 6000 1 true"
+    - "FIRE_RESISTANCE 6000 1 true"
