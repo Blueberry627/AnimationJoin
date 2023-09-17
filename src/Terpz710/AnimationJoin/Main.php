@@ -30,11 +30,11 @@ class Main extends PluginBase implements Listener {
         $animationType = $this->config->get("animation_type", "totem");
 
         if ($animationType === "totem") {
-            // Send Totem animation and sound
+            
             $this->sendTotemAnimation($player);
             $this->sendTotemSound($player);
         } elseif ($animationType === "guardian") {
-            // Send Guardian animation and sound
+            
             $this->sendGuardianAnimation($player);
             $this->sendGuardianSound($player);
         }
@@ -42,7 +42,6 @@ class Main extends PluginBase implements Listener {
 
     private function sendTotemAnimation(Player $player) {
         $pk = ActorEventPacket::create(
-            entityId: $player->getId(),
             event: ActorEventPacket::CONSUME_TOTEM
         );
         $player->broadcastEntityEvent($pk);
