@@ -1,6 +1,6 @@
 <?php
 
-namespace Terpz710\JoinAnimation;
+namespace Terpz710\AnimationJoin;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
