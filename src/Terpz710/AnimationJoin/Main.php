@@ -3,7 +3,7 @@
 namespace Terpz710\JoinAnimation;
 
 use pocketmine\plugin\PluginBase;
-use pocketminr\config\Config;
+use pocketminr\utils\Config;
 
 class Main extends PluginBase {
 
