@@ -8,10 +8,10 @@ use pocketmine\event\Listener;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
-use pocketmine\network\mcpe\protocol\LevelEventPacket;
-use pocketmine\network\mcpe\protocol\types\LevelEvent;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
+use pocketmine\network\mcpe\protocol\types\LevelEvent;
 
 class Main extends PluginBase implements Listener {
 
@@ -30,22 +30,22 @@ class Main extends PluginBase implements Listener {
         $animationType = $this->config->get("animation_type", "totem");
 
         if ($animationType === "totem") {
+            // Send Totem animation and sound
             $this->sendTotemAnimation($player);
             $this->sendTotemSound($player);
         } elseif ($animationType === "guardian") {
-            $player->getInventory()->setItemInHand(Item::get(Item::TOTEM));
+            // Send Guardian animation and sound
             $this->sendGuardianAnimation($player);
             $this->sendGuardianSound($player);
         }
     }
 
     private function sendTotemAnimation(Player $player) {
-        $pk = LevelEventPacket::create(
-            eventId: LevelEvent::GUARDIAN_CURSE, // Corrected totem animation
-            eventData: 0,
-            position: $player->getPosition()
+        $pk = ActorEventPacket::create(
+            entityId: $player->getId(),
+            event: ActorEventPacket::CONSUME_TOTEM
         );
-        $player->getNetworkSession()->sendDataPacket($pk);
+        $player->broadcastEntityEvent($pk);
     }
 
     private function sendTotemSound(Player $player) {
@@ -60,11 +60,12 @@ class Main extends PluginBase implements Listener {
     }
 
     private function sendGuardianAnimation(Player $player) {
-        $pk = ActorEventPacket::create(
-            entityId: $player->getId(),
-            event: ActorEventPacket::CONSUME_TOTEM
+        $pk = LevelEventPacket::create(
+            eventId: LevelEvent::GUARDIAN_CURSE,
+            eventData: 0,
+            position: $player->getPosition()
         );
-        $player->broadcastEntityEvent($pk);
+        $player->getNetworkSession()->sendDataPacket($pk);
     }
 
     private function sendGuardianSound(Player $player) {
