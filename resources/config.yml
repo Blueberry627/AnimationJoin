@@ -3,5 +3,5 @@
 
 # Choose the animation to play when a player joins.
 # Available options: "totem" (Totem of Undying) or "guardian" (Guardian Curse).
-# join-animation: "totem"
+# join-animation: "totem/guardian"
 join-animation: totem
