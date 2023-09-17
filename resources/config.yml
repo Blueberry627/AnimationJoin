@@ -1,4 +1,7 @@
-# Will add other animation type soon.
+# Configuration for JoinAnimations
+# Will add more animations soon.
 
-# Default animation type (can be "totem" or "guardian")
-animation_type: totem
+# Choose the animation to play when a player joins.
+# Available options: "totem" (Totem of Undying) or "guardian" (Guardian Curse).
+# join-animation: "totem"
+join-animation: totem
